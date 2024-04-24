@@ -7,6 +7,14 @@
 </head>
 <body class="w-full h-screen flex items-center justify-center">
     <form method="POST" action="/save-contact" class="w-80 flex flex-col items-start gap-3">
+        {{-- show error messages if any --}}
+        <div class="w-full">
+            @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                    <p class="text-sm text-red-400 p-2 border-2 border-red-400 bg-red-100 rounded-lg mb-2">{{ $error }}</p>
+                @endforeach
+            @endif
+        </div>
         {{-- CRSF token --}}
         @csrf
         <input
@@ -14,6 +22,7 @@
             type="text"
             placeholder="Fullname"
             name="fullname"
+            value="{{old('fullname')}}"
         />
 
         <input
@@ -21,7 +30,8 @@
             type="email"
             placeholder="Email address"
             name="email"
-            required
+            value="{{old('email')}}"
+            {{-- required --}}
         />
 
         <textarea class="border-2 p-2 w-full resize-none rounded-lg text-sm" name="message" rows="8" placeholder="Message"></textarea>

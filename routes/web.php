@@ -1,6 +1,8 @@
 <?php
 
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
 
 // Routes connects us to different path of our application/website
@@ -11,18 +13,30 @@ Route::get('/', function () {
 });
 
 // using controller approach
-Route::get('/contact', [UserController::class, 'contact']);
-Route::get('/login', [UserController::class, 'login']);
+Route::get('/contact', [ContactController::class, 'index']);
 
-// Closure approach
-// Route::get('/contact', function(){
-//     return view('contact', [
-//         'name' => 'Samantha',
-//         'age' => '29 years'
-//     ]);
-// });
+Route::get('/contacts', [ContactController::class, 'contacts']);
 
-Route::post('/save-contact', function(){
-    // Grabs the data from the request and output
-    dd(request()->all());
+Route::post('/save-contact', [ContactController::class, 'store']);
+
+// show the registration page
+Route::get('/registration', [RegistrationController::class, 'index']);
+
+// show the login page
+Route::get('/signin', [AuthController::class, 'index'])->name('login');
+
+// to send the data and login the user
+Route::post('/login', [AuthController::class, 'login']);
+
+// to send the data and create account for the user
+Route::post('/register', [RegistrationController::class, 'store'])
+->name('register');
+
+// block a user that is not logged in
+Route::middleware('auth')->group(function(){
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 });
